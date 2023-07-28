@@ -10,7 +10,6 @@
 UniMPU6050 MPU;
 MicroTasks::Interrupt * pinEvent;
 
-
 void UniMPU6050::setup() {
     logger.log(Loggr::Debug,"Initializing I2C devices...");
     mpu.initialize();
@@ -62,11 +61,16 @@ unsigned long UniMPU6050::loop(MicroTasks::WakeReason reason) {
     if (WakeReason_Event == reason && pinEvent->IsTriggered())
     {
         IQRHandler();
+        if (notifyCommpent != nullptr)
+        {
+            notifyCommpent->send(new MpuReadyMessage(pitch,roll,yaw));
+        }
         return 1000 | MicroTasks::MicroTasksClass::WaitForEvent;
     }
     if (reason == WakeReason_Scheduled) {
         if (!isSetup)  return MicroTasks::MicroTasksClass::Infinate;
         logger.log(Loggr::Debug, "[UniMPU6050] pitch: %f, roll: %f, yaw: %f", pitch, roll, yaw);
+
         return 1000 | MicroTasks::MicroTasksClass::WaitForEvent;
     }
     logger.log(Loggr::ERROR,"[UniMPU6050] Unexpected WakeReason: %d",reason);
@@ -85,8 +89,8 @@ void UniMPU6050::IQRHandler() {
     }
 }
 
-void UniMPU6050::setIntPin(uint8_t intPin) {
-    this->intPin = intPin;
+void UniMPU6050::setIntPin(uint8_t newIntPin) {
+    this->intPin = newIntPin;
 }
 
 UniMPU6050::UniMPU6050() : MicroTasks::Task(),pinListener(this) {
@@ -110,4 +114,21 @@ float UniMPU6050::getRoll() const {
     return roll;
 }
 
+void UniMPU6050::setWire(uint8_t wireNum) {
+    if (wireNum>4)
+    {
+        logger.log(Loggr::ERROR,"[UniMPU6050] Invalid Wire Number: %d",wireNum);
+        return;
+    }
+    Wire.setModule(wireNum);
+}
+
+void UniMPU6050::setNotifyCommpent(Commpent *commpent) {
+    this->notifyCommpent = commpent;
+}
+
 #pragma clang diagnostic pop
+
+MpuReadyMessage::MPUData MpuReadyMessage::getData() const {
+    return data;
+}

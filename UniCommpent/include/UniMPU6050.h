@@ -5,9 +5,23 @@
 #ifndef TM4C_UNIMPU6050_H
 #define TM4C_UNIMPU6050_H
 #include "commpent.h"
-#include "../MPU/MPU6050_6Axis_MotionApps_V6_12.h"
-#include "../MPU/MPU6050.h"
+#include "../../MPU/MPU6050_6Axis_MotionApps_V6_12.h"
+#include "../../MPU/MPU6050.h"
 #include "MicroTasksEventListener.h"
+class MpuReadyMessage : public MicroTasks::Message {
+public:
+    typedef struct MPUData{
+        float pitch;
+        float roll;
+        float yaw;
+        MPUData(float pitch,float roll,float yaw) : pitch(pitch),roll(roll),yaw(yaw){}
+    }MPUData;
+private:
+    MPUData data;
+public:
+    MpuReadyMessage(float pitch,float roll,float yaw) : MicroTasks::Message(0x02), data(MPUData(pitch,roll,yaw)) {}
+    MPUData getData() const;
+};
 
 class UniMPU6050 : public Commpent,virtual public MicroTasks::Task{
 private:
@@ -34,15 +48,17 @@ private:
     float pitch = 0;
     float roll = 0;
     MicroTasks::EventListener pinListener;
+    Commpent * notifyCommpent = nullptr;
 public:
     void setup() override;
     unsigned long loop(MicroTasks::WakeReason reason) override;
     void IQRHandler() override;
-    void setIntPin(uint8_t intPin);
+    void setIntPin(uint8_t newIntPin);
     float getYaw() const;
     float getPitch() const;
     float getRoll() const;
-
+    void setNotifyCommpent(Commpent *commpent);
+    void setWire(uint8_t wireNum);
     UniMPU6050();
 };
 extern UniMPU6050 MPU;

@@ -7,12 +7,14 @@
 #include "Loggr.h"
 class SerialLogger  : public Loggr {
 private:
-    HardwareSerial *serialObj = nullptr;
+    HardwareSerial *serialObj1 = nullptr;
+    HardwareSerial * serialObj2 = nullptr;
     uint64_t baudRate = 115200;
     bool isInit = false;
 public:
     void log(LOG_LEVEL thisLevel, const char *format, ...) override;
-    void setSerialObj(HardwareSerial *newSerialObj);
+    void setSerialObj1(HardwareSerial *newSerialObj);
+    void setSerialObj2(HardwareSerial *newSerialObj);
     void setBaudRate(uint64_t newBaudRate);
     void setup() override;
     unsigned long loop(MicroTasks::WakeReason reason) override { return 0; };

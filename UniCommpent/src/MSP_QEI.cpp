@@ -32,6 +32,7 @@ void MSP_QEI::setup() {
         QEIVelocityEnable(QEI0_BASE);
         QEIIntRegister(QEI0_BASE, []() { QEI0_handler(); });
         QEIIntEnable(QEI0_BASE, QEI_INTINDEX);
+
         logger.log(Loggr::Debug, "QEI0 Setup");
     }
     else
@@ -44,7 +45,7 @@ void MSP_QEI::setup() {
         GPIOPinConfigure(0x00021406); //PC5_PHA1
         GPIOPinConfigure(0x00021806); //PC6_PHB1
         GPIOPinTypeQEI(GPIO_PORTC_BASE, GPIO_PIN_5|GPIO_PIN_6);
-        QEIConfigure(QEI1_BASE, QEI_CONFIG_CAPTURE_A_B | QEI_CONFIG_RESET_IDX | QEI_CONFIG_QUADRATURE, INT32_MAX);
+        QEIConfigure(QEI1_BASE, QEI_CONFIG_CAPTURE_A_B | QEI_CONFIG_RESET_IDX | QEI_CONFIG_QUADRATURE | QEI_CONFIG_SWAP, INT32_MAX);
         QEIEnable(QEI1_BASE);
         QEIVelocityConfigure(QEI1_BASE, QEI_VELDIV_1, 500000);
         QEIVelocityEnable(QEI1_BASE);
@@ -63,7 +64,7 @@ int64_t MSP_QEI::getPositionValue() const {
 
 void MSP_QEI::IQRHandler() {
     logger.log(Loggr::LOG_LEVEL::Debug, "QEI IQR");
-    /**
+    /***
      * @brief 如果后续需要则在这里添加中断处理代码
      */
 }
@@ -71,7 +72,10 @@ void MSP_QEI::IQRHandler() {
 unsigned long MSP_QEI::loop(MicroTasks::WakeReason reason) {
     auto position = getPositionValue();
     auto velocity = getVelocityValue();
-    logger.log(Loggr::Debug, "current value: %lld,%lld",position,velocity);
+    if (this->QEI_BASE == QEI0_BASE)
+        logger.log(Loggr::Debug, "[QEI0]current value: %lld,%lld",position,velocity);
+    else
+        logger.log(Loggr::Debug, "[QEI1]current value: %lld,%lld",position,velocity);
     return readFrecuency;
 }
 

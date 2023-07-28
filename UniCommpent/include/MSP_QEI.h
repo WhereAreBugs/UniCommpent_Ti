@@ -9,7 +9,7 @@
 class MSP_QEI : public Commpent,virtual public MicroTasks::Task {
 private:
     uint32_t QEI_BASE;
-    int64_t  positionValue;
+    int64_t  positionValue{};
     uint16_t readFrecuency = 500;
 public:
     MSP_QEI(uint32_t QEI_BASE);
