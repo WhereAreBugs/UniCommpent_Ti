@@ -16,4 +16,6 @@
 #include "Motor.h"
 #include "Servo_SG90.h"
 #include "TempWhile.h"
+#include "UniMPU9250.h"
+#include "ConfigSaver.h"
 #endif //TM4C_UNICOMMPENTS_H

@@ -93,7 +93,7 @@ void UniMPU6050::setIntPin(uint8_t newIntPin) {
     this->intPin = newIntPin;
 }
 
-UniMPU6050::UniMPU6050() : MicroTasks::Task(),pinListener(this) {
+UniMPU6050::UniMPU6050() : MicroTasks::Task(),Commpent(16), pinListener(this) {
     mpuIntStatus = 0;
     devStatus = 0;
     packetSize = 0;

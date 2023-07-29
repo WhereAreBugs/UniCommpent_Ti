@@ -21,7 +21,7 @@ Servo_SG90::~Servo_SG90() {
     delete servoObj;
 }
 
-Servo_SG90::Servo_SG90(uint8_t newPin) : pin(newPin) {
+Servo_SG90::Servo_SG90(uint8_t newPin) : Commpent(15), pin(newPin) {
     servoObj = new Servo();
     if (servoObj== nullptr)
     {

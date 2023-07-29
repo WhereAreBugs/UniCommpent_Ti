@@ -13,7 +13,7 @@ private:
     char terminator = '\n';
 
 public:
-    explicit SerialChecker(HardwareSerial *targetSerial) : serial(targetSerial) {};
+    explicit SerialChecker(HardwareSerial *targetSerial) : Commpent(3), serial(targetSerial) {};
     void setup() override;
     void IQRHandler() override;
     void onData(void (*newFunc)(String));

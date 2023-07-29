@@ -5,8 +5,8 @@
 #ifndef TM4C_UNIMPU6050_H
 #define TM4C_UNIMPU6050_H
 #include "commpent.h"
-#include "../../MPU/MPU6050_6Axis_MotionApps_V6_12.h"
-#include "../../MPU/MPU6050.h"
+#include "../../MPU6050/MPU6050_6Axis_MotionApps_V6_12.h"
+#include "../../MPU6050/MPU6050.h"
 #include "MicroTasksEventListener.h"
 class MpuReadyMessage : public MicroTasks::Message {
 public:

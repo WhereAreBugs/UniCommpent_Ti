@@ -5,13 +5,14 @@
 #ifndef TM4C_SERIALLOGGER_H
 #define TM4C_SERIALLOGGER_H
 #include "Loggr.h"
-class SerialLogger  : public Loggr {
+class SerialLogger  : public Loggr{
 private:
     HardwareSerial *serialObj1 = nullptr;
     HardwareSerial * serialObj2 = nullptr;
     uint64_t baudRate = 115200;
     bool isInit = false;
 public:
+    SerialLogger(): Loggr(11){};
     void log(LOG_LEVEL thisLevel, const char *format, ...) override;
     void setSerialObj1(HardwareSerial *newSerialObj);
     void setSerialObj2(HardwareSerial *newSerialObj);

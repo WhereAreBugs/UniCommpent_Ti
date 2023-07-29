@@ -86,7 +86,7 @@ int64_t MSP_QEI::getVelocityValue() const {
         return QEIDirectionGet(QEI1_BASE)*static_cast<int64_t>(QEIVelocityGet(QEI1_BASE));
 }
 
-MSP_QEI::MSP_QEI(uint32_t QEI_BASE) {
+MSP_QEI::MSP_QEI(uint32_t QEI_BASE) : Commpent(10) {
     if (QEI_BASE != QEI0_BASE && QEI_BASE != QEI1_BASE) {
         logger.log(Loggr::ERROR, "QEI_BASE Select ERROR");
     }

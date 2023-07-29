@@ -9,15 +9,15 @@ Gy26::~Gy26() {
     delete gy26Obj;
 }
 
-Gy26::Gy26() {
+Gy26::Gy26():Commpent(9) {
     gy26Obj = new GY26_I2C_Compass();
 }
 
-Gy26::Gy26(uint8_t address) {
+Gy26::Gy26(uint8_t address) : Commpent(9) {
     gy26Obj = new GY26_I2C_Compass(address);
 }
 
-Gy26::Gy26(uint8_t address, TwoWire *wire) {
+Gy26::Gy26(uint8_t address, TwoWire *wire) : Commpent(9) {
     gy26Obj = new GY26_I2C_Compass(address,wire);
 }
 

@@ -4,7 +4,7 @@
 
 #include "VOFA.h"
 
-VOFA::VOFA(HardwareSerial *serial) : MicroTasks::Task() {
+VOFA::VOFA(HardwareSerial *serial) : MicroTasks::Task() ,Commpent(18){
     serialObj = serial;
 }
 

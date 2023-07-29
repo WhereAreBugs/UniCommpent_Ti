@@ -12,6 +12,7 @@ class TempWhile :virtual public MicroTasks::Task, public Commpent {
     uint64_t interval = 0;
     void (*func)(void) = nullptr;
     public:
+    TempWhile():MicroTasks::Task(),Commpent(12){};
     void setup() override;
     void setFunc(void (*newFunc)(void));
     void setInterval(uint64_t newInterval);

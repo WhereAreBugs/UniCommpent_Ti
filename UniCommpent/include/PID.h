@@ -6,7 +6,8 @@
 #define SEARCHCAR_PID_H
 #include "commpent.h"
 struct PIDConfig{
-    PIDConfig(float kp, float ki, float kd, float min, float target, float max);
+    PIDConfig(float kp, float ki, float kd, float min, float target, float max)
+    : kp(kp), ki(ki), kd(kd), target(target), max(max), min(min){};
     PIDConfig();
     float kp;
     float ki;
@@ -18,9 +19,10 @@ struct PIDConfig{
 
 class PID : public Commpent {
 private:
-    PIDConfig config;
+    PIDConfig pidConfig;
     float lastError{};
     float integral{0};
+    bool checkIsConfigExist(PIDConfig &data);
 
 public:
     explicit PID(PIDConfig config);
@@ -31,6 +33,11 @@ public:
     void setTarget(float target);
     void setConfig(PIDConfig config);
     PIDConfig getConfig();
+    int8_t getPreDefinedPIDCount();
+    std::vector<float> & getData() override;
+    void saveCurrentConfigAsPreDefined(uint8_t index);
+    void setPreDefinedPID(uint8_t index);
+    void reloadConfig() override;
 };
 
 

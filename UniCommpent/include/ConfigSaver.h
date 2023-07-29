@@ -8,6 +8,7 @@
 #include "MicroTasks.h"
 #include "/Users/cat/.platformio/packages/framework-energiativa/libraries/EEPROM/EEPROM.h"
 #include <vector>
+#include <map>
 class RequestSaveMessage : public MicroTasks::Message {
 private:
     static const uint32_t ID = 0x03;
@@ -17,10 +18,10 @@ public:
 
 class ConfigSaver : public Commpent, virtual public MicroTasks::Task{
 private:
-    std::vector<float *> targetData;
+    std::vector<std::pair<std::pair<uint32_t,Commpent *> ,std::vector<float>*>> targetData;
     int32_t autoSaveTimeMs = -1;
 public:
-    ConfigSaver():MicroTasks::Task(){};
+    ConfigSaver():MicroTasks::Task(), Commpent(13){};
     void setup() override ;
     unsigned long loop(MicroTasks::WakeReason reason) override;
     void IQRHandler() override{};
@@ -35,11 +36,9 @@ public:
     void load();
 public:
     ///@brief 添加需要保存的数据
-    void addData(float *data);
-    void addData(float ** data, int size);
-    void addData(float &data);
-    void addData(std::vector<float >& data);
-    void addData(std::vector<float *>& data);
+    void addData(Commpent * target);
+    void addData(uint32_t uuid, std::vector<float>& data);
+    void addData(uint32_t uuid, std::vector<float>*  data);
 
 };
 

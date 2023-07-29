@@ -6,39 +6,68 @@
 #include "UniCommpents.h"
 
 void ConfigSaver::save() {
-    int addr = 0x00;
-    for(auto i : targetData) {
-        if (i == nullptr) {
-            logger.log(Loggr::ERROR,"[ConfigSaver] data is nullptr");
-            continue;
-        }
-        for (int j = 0; j < sizeof i; ++j) {
-            EEPROM.update(addr, *reinterpret_cast<uint8_t *>(i+j));
-        }
+   uint8_t addrCount = 0;
+    for(auto &i:targetData)
+    {
+         EEPROM.write(addrCount++,i.first.first); //写入uuid
+         EEPROM.write(addrCount++,i.second->size()); //写入数据的个数
+         for(auto &j:*i.second)
+         {
+             //每个数据4个字节，分四次写入
+                EEPROM.write(addrCount++,((uint8_t*)&j)[0]);
+                EEPROM.write(addrCount++,((uint8_t*)&j)[1]);
+                EEPROM.write(addrCount++,((uint8_t*)&j)[2]);
+                EEPROM.write(addrCount++,((uint8_t*)&j)[3]);
+                logger.log(Loggr::Debug,"[ConfigSaver] Save data:%f",j);
+         }
+         //写入结束标志
+            EEPROM.write(addrCount++,0xFF);
     }
+    logger.log(Loggr::INFO,"[ConfigSaver] Save success!");
 }
 
 void ConfigSaver::load() {
-    int addr = 0x00;
-    for(auto i : targetData) {
-        if (i == nullptr) {
-            logger.log(Loggr::ERROR,"[ConfigSaver] data is nullptr");
-            continue;
+    //读取数据
+    uint8_t addrCount = 0;
+    uint32_t uuid;
+    uint8_t dataCount;
+    while(1)
+    {
+        uuid = EEPROM.read(addrCount++);
+        if(uuid == 0xFF)
+            break;
+        dataCount = EEPROM.read(addrCount++);
+        std::vector<float> *data = new std::vector<float>(dataCount);
+        for(int i = 0;i < dataCount;i++)
+        {
+            float temp;
+            ((uint8_t*)&temp)[0] = EEPROM.read(addrCount++);
+            ((uint8_t*)&temp)[1] = EEPROM.read(addrCount++);
+            ((uint8_t*)&temp)[2] = EEPROM.read(addrCount++);
+            ((uint8_t*)&temp)[3] = EEPROM.read(addrCount++);
+            data->at(i) = temp;
+            logger.log(Loggr::Debug,"[ConfigSaver] Load data:%f",temp);
         }
-        for (int j = 0; j < sizeof i; ++j) {
-            *reinterpret_cast<uint8_t *>(i+j) = EEPROM.read(addr);
+        for(auto &i:targetData)
+        {
+            if(i.first.first == uuid)
+            {
+                *i.second = *data;
+                break;
+            }
         }
+        delete data;
     }
+    for(auto &i:targetData)
+    {
+        i.first.second->reloadConfig();
+    }
+    logger.log(Loggr::INFO,"[ConfigSaver] Load success!");
 }
 
 void ConfigSaver::setup() {
-    load();
-}
 
-void ConfigSaver::addData(float *data) {
-    targetData.push_back(data);
 }
-
 unsigned long ConfigSaver::loop(MicroTasks::WakeReason reason) {
     if (autoSaveTimeMs == -1)
         return MicroTasks::MicroTasksClass::Infinate | MicroTasks::MicroTasksClass::WaitForMessage;
@@ -61,29 +90,13 @@ unsigned long ConfigSaver::loop(MicroTasks::WakeReason reason) {
     return autoSaveTimeMs | MicroTasks::MicroTasksClass::WaitForMessage;
 }
 
-void ConfigSaver::addData(float **data, int size) {
-    for (int i = 0; i < size; ++i) {
-        addData(data[i]);
-    }
-
-}
-
-void ConfigSaver::addData(float &data) {
-    addData(&data);
-}
-
-void ConfigSaver::addData(std::vector<float> &data) {
-    for (auto &i : data) {
-        addData(i);
-    }
-
-}
-
-void ConfigSaver::addData(std::vector<float *> &data) {
-    for (auto &i : data) {
-        addData(i);
-    }
+void ConfigSaver::addData(Commpent *target) {
+    targetData.emplace_back(std::pair<uint32_t,Commpent *>(target->getUUID(),target),&target->getData());
 }
 
 
-
+void std::__throw_out_of_range(char const*)
+{
+    logger.log(Loggr::ERROR,"[ConfigSaver] Out of range!");
+    while (true);
+}

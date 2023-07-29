@@ -11,6 +11,10 @@ unsigned long Commpent::loop(MicroTasks::WakeReason reason) {
     return defaultWakeupInterval|MicroTasks::MicroTasksClass::Infinate;
 }
 
+uint32_t Commpent::getUUID() {
+    return uuid;
+}
+
 
 
 

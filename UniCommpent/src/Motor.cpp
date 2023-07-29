@@ -45,7 +45,7 @@ void Motor::setPWM(uint8_t motor, int16_t pwm) {
     }
 }
 
-Motor::Motor(uint8_t pinA1, uint8_t pinB1, uint8_t pinA2, uint8_t pinB2) {
+Motor::Motor(uint8_t pinA1, uint8_t pinB1, uint8_t pinA2, uint8_t pinB2):Commpent(17) {
     addTarget(pinA1,pinB1);
     addTarget(pinA2,pinB2);
 }

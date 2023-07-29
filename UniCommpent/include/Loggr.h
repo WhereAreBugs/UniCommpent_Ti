@@ -17,6 +17,7 @@ public:
     };
     virtual void log(LOG_LEVEL level, const char *format, ...);
     void setLogLevel(LOG_LEVEL level);
+    Loggr(uint32_t uuid):Commpent(uuid){};
 protected:
     LOG_LEVEL logLevel = Debug;
     static String getLogLevelString(LOG_LEVEL level);

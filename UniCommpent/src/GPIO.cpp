@@ -7,9 +7,10 @@
 #include "SerialLogger.h"
 
 extern SerialLogger logger;
-GPIO::GPIO(uint8_t pin, uint8_t mode) {
+GPIO::GPIO(uint8_t pin, uint8_t mode):Commpent(7) {
     this->pin = pin;
     this->mode = mode;
+    this->state = LOW;
 }
 
 unsigned long GPIO::loop(MicroTasks::WakeReason reason) {
