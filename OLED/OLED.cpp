@@ -23,26 +23,26 @@
 *@author:JCML
 *@date	:2023-02-02
 ***********************************************************/
-TwoWire wire2(1);
+TwoWire wire_Display(1);
 void OLED_WR_Byte(unsigned char dat, unsigned char cmd)
 {
 
 
   if (cmd == OLED_DATA) {
 
-      wire2.beginTransmission(0x3c);
-      wire2.write(0x40);
-      wire2.write(dat);
-      wire2.endTransmission();
+      wire_Display.beginTransmission(0x3c);
+      wire_Display.write(0x40);
+      wire_Display.write(dat);
+      wire_Display.endTransmission();
 
   }
   else{
       //Q: 请问以下代码是否有问题导致屏幕不亮？
 
-      wire2.beginTransmission(0x3c);
-        wire2.write(0x00);
-        wire2.write(dat);
-        wire2.endTransmission();
+      wire_Display.beginTransmission(0x3c);
+        wire_Display.write(0x00);
+        wire_Display.write(dat);
+        wire_Display.endTransmission();
   }
 
 }
@@ -58,8 +58,8 @@ void OLED_WR_Byte(unsigned char dat, unsigned char cmd)
 
 void OLED_Init(void)
 {
-
-    wire2.setModule(1);
+    wire_Display.setClock(400);
+    wire_Display.setModule(1);
     OLED_WR_Byte(0xAE, OLED_CMD); //关显示
 
   OLED_WR_Byte(0x00, OLED_CMD); //列地址  低 00-0F

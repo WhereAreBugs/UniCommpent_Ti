@@ -19,7 +19,7 @@ void UniMPU9250::setup() {
     mpu9250->setup(addr, settings,*taregtwire);
     if (!mpu9250->isConnected())
         logger.log(Loggr::ERROR, "[UniMPU9250] MPU9250 not connected");
-    mpu9250->calibrateAccelGyro();
+    cilibrateAcc();
     logger.log(Loggr::INFO, "[UniMPU9250] Accel and Gyro calibrated");
 
 }
@@ -93,4 +93,19 @@ void UniMPU9250::reloadConfig() {
     mpu9250->setAccBias(config.at(0),config.at(1),config.at(2));
     mpu9250->setGyroBias(config.at(3),config.at(4),config.at(5));
     mpu9250->setMagBias(config.at(6),config.at(7),config.at(8));
+}
+
+std::vector<float> UniMPU9250::getDataCopy() {
+    config.clear();
+    config.push_back(mpu9250->getAccBiasX());
+    config.push_back(mpu9250->getAccBiasY());
+    config.push_back(mpu9250->getAccBiasZ());
+    config.push_back(mpu9250->getGyroBiasX());
+    config.push_back(mpu9250->getGyroBiasY());
+    config.push_back(mpu9250->getGyroBiasZ());
+    config.push_back(mpu9250->getMagBiasX());
+    config.push_back(mpu9250->getMagBiasY());
+    config.push_back(mpu9250->getMagBiasZ());
+    return config;
+
 }

@@ -9,6 +9,7 @@
 #include "SerialLogger.h"
 #include "MicroTasks.h"
 #include "MicroTasksTask.h"
+
 void QEI0_handler();
 void QEI1_handler();
 void MSP_QEI::setup() {
@@ -28,7 +29,7 @@ void MSP_QEI::setup() {
         QEIConfigure(QEI0_BASE, QEI_CONFIG_CAPTURE_A_B | QEI_CONFIG_RESET_IDX | QEI_CONFIG_QUADRATURE, INT32_MAX);
         QEIEnable(QEI0_BASE);
         QEIPositionSet(QEI0_BASE, INT32_MAX/2);
-        QEIVelocityConfigure(QEI0_BASE, QEI_VELDIV_1, 500000);
+        QEIVelocityConfigure(QEI0_BASE, QEI_VELDIV_1, 500000*4.5);
         QEIVelocityEnable(QEI0_BASE);
         QEIIntRegister(QEI0_BASE, []() { QEI0_handler(); });
         QEIIntEnable(QEI0_BASE, QEI_INTINDEX);
@@ -47,7 +48,7 @@ void MSP_QEI::setup() {
         GPIOPinTypeQEI(GPIO_PORTC_BASE, GPIO_PIN_5|GPIO_PIN_6);
         QEIConfigure(QEI1_BASE, QEI_CONFIG_CAPTURE_A_B | QEI_CONFIG_RESET_IDX | QEI_CONFIG_QUADRATURE | QEI_CONFIG_SWAP, INT32_MAX);
         QEIEnable(QEI1_BASE);
-        QEIVelocityConfigure(QEI1_BASE, QEI_VELDIV_1, 500000);
+        QEIVelocityConfigure(QEI1_BASE, QEI_VELDIV_1, 500000*4.5);
         QEIVelocityEnable(QEI1_BASE);
         QEIIntRegister(QEI1_BASE, []() { QEI1_handler(); });
         QEIIntEnable(QEI1_BASE, QEI_INTINDEX);
@@ -76,6 +77,8 @@ unsigned long MSP_QEI::loop(MicroTasks::WakeReason reason) {
         logger.log(Loggr::Debug, "[QEI0]current value: %lld,%lld",position,velocity);
     else
         logger.log(Loggr::Debug, "[QEI1]current value: %lld,%lld",position,velocity);
+    if (dataSpeedNotify!= nullptr)
+        dataSpeedNotify->send(new SpeedFeedback(this->QEI_BASE == QEI1_BASE));
     return readFrecuency;
 }
 
@@ -91,6 +94,11 @@ MSP_QEI::MSP_QEI(uint32_t QEI_BASE) : Commpent(10) {
         logger.log(Loggr::ERROR, "QEI_BASE Select ERROR");
     }
     this->QEI_BASE = QEI_BASE;
+}
+
+void MSP_QEI::setDataSpeedNotify(Commpent *dataSpeedNotify) {
+    this->dataSpeedNotify = dataSpeedNotify;
+
 }
 
 void QEI1_handler() {

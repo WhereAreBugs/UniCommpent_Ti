@@ -26,6 +26,12 @@ public:
          */
         return config;
     }
+    virtual std::vector<float> getDataCopy() {
+        /**
+         * @attention 此处返回的数据未进行保护！
+         */
+        return config;
+    }
     virtual void setData(std::vector<float> data) {
         config = data; //WARNING: this will copy the data NOLINT(*-unnecessary-value-param)
     }

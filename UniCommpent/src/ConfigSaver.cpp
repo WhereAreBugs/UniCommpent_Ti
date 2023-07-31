@@ -10,15 +10,16 @@ void ConfigSaver::save() {
     for(auto &i:targetData)
     {
          EEPROM.write(addrCount++,i.first.first); //写入uuid
-         EEPROM.write(addrCount++,i.second->size()); //写入数据的个数
-         for(auto &j:*i.second)
+         auto waitSaveData = i.first.second->getDataCopy();
+         EEPROM.write(addrCount++,waitSaveData.size()); //写入数据的个数
+         for(auto &j:waitSaveData)
          {
              //每个数据4个字节，分四次写入
                 EEPROM.write(addrCount++,((uint8_t*)&j)[0]);
                 EEPROM.write(addrCount++,((uint8_t*)&j)[1]);
                 EEPROM.write(addrCount++,((uint8_t*)&j)[2]);
                 EEPROM.write(addrCount++,((uint8_t*)&j)[3]);
-                logger.log(Loggr::Debug,"[ConfigSaver] Save data:%f",j);
+                logger.log(Loggr::INFO,"[ConfigSaver] Save data:%f",j);
          }
          //写入结束标志
             EEPROM.write(addrCount++,0xFF);
@@ -46,7 +47,7 @@ void ConfigSaver::load() {
             ((uint8_t*)&temp)[2] = EEPROM.read(addrCount++);
             ((uint8_t*)&temp)[3] = EEPROM.read(addrCount++);
             data->at(i) = temp;
-            logger.log(Loggr::Debug,"[ConfigSaver] Load data:%f",temp);
+            logger.log(Loggr::INFO,"[ConfigSaver] Load data:%f",temp);
         }
         for(auto &i:targetData)
         {

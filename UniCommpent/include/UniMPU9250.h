@@ -69,6 +69,8 @@ public:
     float getPitch() { return mpu9250->getPitch(); }
     float getYaw() { return mpu9250->getYaw(); }
     float getRoll() { return mpu9250->getRoll(); }
+public:
+    std::vector<float> getDataCopy() override;
     void  reloadConfig() override;
 
 };

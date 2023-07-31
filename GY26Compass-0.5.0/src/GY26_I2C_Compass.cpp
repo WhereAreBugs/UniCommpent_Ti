@@ -45,7 +45,7 @@ float GY26_I2C_Compass::getCompassAngle()
 #endif
   if (sendCommandI2C(CMD_GET_COMPASS))
     return (float)readIntegerI2C(REG_COMPASS) / 10;
-  return 0.0;
+  return -1;
 }
 
 float GY26_I2C_Compass::getDeclinationAngle()

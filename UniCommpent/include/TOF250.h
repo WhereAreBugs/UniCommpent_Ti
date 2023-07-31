@@ -10,18 +10,19 @@ class TOF250 : public Commpent,virtual public MicroTasks::Task{
 private:
     TwoWire * wireHandler = nullptr;
     HardwareSerial * serialHandler = nullptr;
-    int address = 0x52;
-    uint8_t updateInterval = 200;
+    uint8_t address = 0x52;
+    uint16_t updateInterval = 200;
     bool SerialMode = false;
     double result = 0;
     void Get_LidarDataFromIIC();
     void Get_liarDataFromSerial();
 public:
+    TOF250() : Commpent(20) {};
     void setWireHandler(TwoWire *newWireHandler) { wireHandler = newWireHandler; }
     void setSerialHandler(HardwareSerial *newSerialHandler) { serialHandler = newSerialHandler; }
     void setSerialMode(bool newSerialMode) { SerialMode = newSerialMode; }
     void setAddress(uint8_t newAddress) { address = newAddress; }
-    void setUpdateInterval(uint8_t newUpdateInterval) { updateInterval = newUpdateInterval; }
+    void setUpdateInterval(uint16_t newUpdateInterval) { updateInterval = newUpdateInterval; }
     double getResult() const { return result; }
     void setup() override;
     void IQRHandler() override {};

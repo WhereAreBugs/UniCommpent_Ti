@@ -18,4 +18,7 @@
 #include "TempWhile.h"
 #include "UniMPU9250.h"
 #include "ConfigSaver.h"
+#include "ButtonEvent.h"
+#include "Gy26_Ser.h"
+#include "UniCommpents.h"
 #endif //TM4C_UNICOMMPENTS_H

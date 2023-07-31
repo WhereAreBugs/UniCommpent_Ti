@@ -94,6 +94,10 @@ void PID::saveCurrentConfigAsPreDefined(uint8_t index) {
 }
 
 std::vector<float> &PID::getData() {
+    if (config.size()%6 != 0) {
+        logger.log(Loggr::WARN, "[PID] config data error! All data will be clear!");
+        config.clear();
+    }
     if (!checkIsConfigExist(pidConfig)) {
         saveCurrentConfigAsPreDefined(getPreDefinedPIDCount() + 1);
     }
@@ -101,7 +105,7 @@ std::vector<float> &PID::getData() {
 }
 
 bool PID::checkIsConfigExist(PIDConfig &data) {
-    for (int i = 0; i < config.size() / 6; ++i) {
+    for (uint8_t i = 0; i < config.size() / 6; ++i) {
         if (config[i*6] == data.kp && config[i*6+1] == data.ki && config[i*6+2] == data.kd && config[i*6+3] == data.min && config[i*6+4] == data.max && config[i*6+5] == data.target)
         {
             return true;
@@ -112,7 +116,7 @@ bool PID::checkIsConfigExist(PIDConfig &data) {
 
 void PID::reloadConfig() {
     logger.log(Loggr::Debug, "[PID] reloadConfig");
-    for (int i = 0; i < config.size() / 6; ++i) {
+    for (uint8_t i = 0; i < config.size() / 6; ++i) {
         logger.log(Loggr::Debug, "[PID] %d: %f %f %f %f %f %f", i, config[i*6], config[i*6+1], config[i*6+2], config[i*6+3], config[i*6+4], config[i*6+5]);
     }
     logger.log(Loggr::INFO,"共有%d个PID参数",config.size()/6);
@@ -124,7 +128,7 @@ PIDConfig::PIDConfig() {
     this->kp = 0;
     this->ki = 0;
     this->kd = 0;
-    this->min = 100;
-    this->max = 100;
+    this->min = -200;
+    this->max = 200;
     this->target = 0;
 }
