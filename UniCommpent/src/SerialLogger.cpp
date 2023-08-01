@@ -15,6 +15,7 @@ void SerialLogger::log(Loggr::LOG_LEVEL thisLevel, const char *format, ...) {
     va_start(args, format);
     char buf[256];
     vsprintf(buf, format, args);
+    va_end(args);
     serialObj1->print(buf);
     serialObj1->print("\r\n");
     if (serialObj2 != nullptr)
@@ -23,7 +24,6 @@ void SerialLogger::log(Loggr::LOG_LEVEL thisLevel, const char *format, ...) {
         serialObj2->print(buf);
         serialObj2->print("\r\n");
     }
-    va_end(args);
 
 
 }
