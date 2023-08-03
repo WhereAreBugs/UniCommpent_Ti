@@ -25,6 +25,7 @@ private:
     bool checkIsConfigExist(PIDConfig &data);
 
 public:
+    PID();
     explicit PID(PIDConfig config);
     void setup() override;
     float update(float input);

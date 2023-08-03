@@ -123,6 +123,11 @@ void PID::reloadConfig() {
     setPreDefinedPID(getPreDefinedPIDCount());
 }
 
+PID::PID():Commpent(14) {
+    this->pidConfig = PIDConfig();
+
+}
+
 
 PIDConfig::PIDConfig() {
     this->kp = 0;

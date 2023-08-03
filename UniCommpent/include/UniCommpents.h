@@ -21,4 +21,5 @@
 #include "ButtonEvent.h"
 #include "Gy26_Ser.h"
 #include "UniCommpents.h"
+#include "FrecTest.h"
 #endif //TM4C_UNICOMMPENTS_H
